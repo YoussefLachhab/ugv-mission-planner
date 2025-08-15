@@ -28,5 +28,6 @@ genai = [
 dev = [
   "pytest>=8",
   "ruff>=0.4",
-  "mypy>=1.8"
+  "mypy>=1.8",
+  "types-jsonschema>=4.23.0"
 ]
