@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ugv-mission-planner"
+version = "0.1.0"
+description = "GenAI-guarded UGV mission planner: NL → policy-compliant plan → deterministic execution"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Your Name" }]
+keywords = ["UGV", "mission planning", "GenAI", "A*", "safety", "RAG"]
+
+# Minimal deps to start
+dependencies = [
+  "pydantic>=2.5",
+  "numpy>=1.26",
+  "jsonschema>=4.20"
+]
+
+[project.optional-dependencies]
+genai = [
+  "openai>=1.40",
+  "langchain>=0.2.0",
+  "langgraph>=0.1.0"
+]
+
+dev = [
+  "pytest>=8",
+  "ruff>=0.4",
+  "mypy>=1.8"
+]

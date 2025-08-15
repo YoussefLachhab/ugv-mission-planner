@@ -1,0 +1,38 @@
+{
+  "$id": "mission_plan.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MissionPlan",
+  "type": "object",
+  "required": ["mission_id", "waypoints", "constraints"],
+  "properties": {
+    "mission_id": { "type": "string", "minLength": 1 },
+    "waypoints": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["x", "y", "speed_mps"],
+        "properties": {
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "speed_mps": { "type": "number", "minimum": 0.0, "maximum": 2.0 }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["max_speed_mps", "avoid_zones", "battery_min_pct"],
+      "properties": {
+        "max_speed_mps": { "type": "number", "default": 1.5, "minimum": 0.0, "maximum": 2.0 },
+        "avoid_zones": {
+          "type": "array",
+          "description": "Array of rectangles [x_min, y_min, x_max, y_max]",
+          "items": { "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4 },
+          "default": []
+        },
+        "battery_min_pct": { "type": "number", "default": 20, "minimum": 0, "maximum": 100 }
+      }
+    }
+  },
+  "additionalProperties": false
+}

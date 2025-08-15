@@ -1,0 +1,13 @@
+pydantic>=2.5
+numpy>=1.26
+jsonschema>=4.20
+
+[dev]
+pytest>=8
+ruff>=0.4
+mypy>=1.8
+
+[genai]
+openai>=1.40
+langchain>=0.2.0
+langgraph>=0.1.0
