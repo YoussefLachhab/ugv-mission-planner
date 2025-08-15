@@ -1,5 +1,9 @@
 {
   "mission_id": "demo_patrol_001",
+  "goals": [
+    [2, 2],
+    [18, 2]
+  ],
   "waypoints": [
     { "x": 2, "y": 2, "speed_mps": 1.2 },
     { "x": 18, "y": 2, "speed_mps": 1.2 },

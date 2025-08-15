@@ -1,0 +1,111 @@
+{
+  "$defs": {
+    "Constraints": {
+      "properties": {
+        "max_speed_mps": {
+          "description": "Per-mission cap \u2264 2.0",
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "title": "Max Speed Mps",
+          "type": "number"
+        },
+        "avoid_zones": {
+          "description": "Rectangles: [xmin, ymin, xmax, ymax]",
+          "items": {
+            "items": {
+              "type": "number"
+            },
+            "maxItems": 4,
+            "minItems": 4,
+            "type": "array"
+          },
+          "title": "Avoid Zones",
+          "type": "array"
+        },
+        "battery_min_pct": {
+          "default": 15.0,
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "title": "Battery Min Pct",
+          "type": "number"
+        }
+      },
+      "required": [
+        "max_speed_mps"
+      ],
+      "title": "Constraints",
+      "type": "object"
+    },
+    "Waypoint": {
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number"
+        },
+        "speed_mps": {
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "title": "Speed Mps",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "speed_mps"
+      ],
+      "title": "Waypoint",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "mission_id": {
+      "title": "Mission Id",
+      "type": "string"
+    },
+    "created_at_utc": {
+      "format": "date-time",
+      "title": "Created At Utc",
+      "type": "string"
+    },
+    "goals": {
+      "description": "Ordered goals A,B,...",
+      "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "number"
+          }
+        ],
+        "type": "array"
+      },
+      "minItems": 1,
+      "title": "Goals",
+      "type": "array"
+    },
+    "waypoints": {
+      "items": {
+        "$ref": "#/$defs/Waypoint"
+      },
+      "title": "Waypoints",
+      "type": "array"
+    },
+    "constraints": {
+      "$ref": "#/$defs/Constraints"
+    }
+  },
+  "required": [
+    "goals",
+    "constraints"
+  ],
+  "title": "MissionPlan",
+  "type": "object"
+}
