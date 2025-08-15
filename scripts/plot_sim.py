@@ -36,9 +36,9 @@ def main():
 
     # Avoid zones (draw rectangles)
     for (x0, y0, x1, y1) in mission["constraints"]["avoid_zones"]:
-        rx, ry = [y0, y1 - y0], [x0, x1 - x0]  # swap to match imshow axes
         rect = plt.Rectangle((y0, x0), y1 - y0, x1 - x0, fill=False, linewidth=1.5)
         ax.add_patch(rect)
+
 
     # Planned path (waypoints as small markers + line)
     xs = [y for (_, y, _ ) in wps]   # note: imshow uses (row=x, col=y)
