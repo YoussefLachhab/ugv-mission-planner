@@ -43,10 +43,11 @@ def main():
     # Planned path (waypoints as small markers + line)
     xs = [y for (_, y, _ ) in wps]   # note: imshow uses (row=x, col=y)
     ys = [x for (x, _, _ ) in wps]
-    path_line, = ax.plot(xs, ys, linewidth=1.0)
-    path_pts = ax.scatter(xs, ys, s=10)
+    ax.plot(xs, ys, linewidth=1.0)
+    ax.scatter(xs, ys, s=10)
 
-# Moving agent (marker-only Line2D)
+
+    # Moving agent (marker-only Line2D)
     agent, = ax.plot([], [], marker="o", markersize=6, linestyle="")
 
     def init():
