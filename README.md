@@ -1,44 +1,37 @@
-UGV Mission Planner (GenAI‑Guarded)
+# UGV Mission Planner (GenAI‑Guarded)
 
+![CI](https://github.com/<YOUR_USERNAME>/ugv-mission-planner/actions/workflows/ci.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
+---
 
+## 🎯 Objective
 
-Turn natural‑language missions into validated, policy‑compliant plans and execute them in a deterministic 2D sim. GenAI is boxed behind strict schemas and policy checks; planning and execution are deterministic.
+The **UGV Mission Planner (GenAI‑Guarded)** is designed to showcase how natural‑language instructions can be transformed into safe, deterministic, and policy‑compliant mission plans for an Unmanned Ground Vehicle (UGV). This project demonstrates **System Architect** skills by combining:
 
-📅 Project Timeline
+* Contracts‑first design with strict schema validation.
+* A clear separation of GenAI interfaces from deterministic planning and execution.
+* Built‑in safety checks and traceability.
+* Reproducibility, testability, and CI‑driven quality.
 
-Day 1 (✅ Complete)
+This repository serves as a public, interview‑ready demonstration of architecting a small but realistic autonomous system with modern AI tooling.
 
-Public GitHub repo with proper structure.
+---
 
-.gitignore and .gitattributes configured.
+## 📦 Deliverables
 
-Core docs, schemas, models, example missions/maps.
+* **Validated data contracts**: JSON Schema + Pydantic models for `MissionPlan`.
+* **Safety corpus**: demo UGV policy rules for validation and grounding.
+* **Example missions and maps**: reproducible test scenarios.
+* **Automated tests**: schema validation and model correctness.
+* **Continuous Integration**: lint, type checks, and tests run on every commit.
+* **Documentation**: requirements, architecture diagrams, safety case, and architecture decision records (ADRs).
 
-Unit tests for schema and models.
+---
 
-CI workflow prepared (lint, type-check, tests).
+## 🚀 Quickstart
 
-Fixed CI by adding types-jsonschema stubs for mypy.
-
-Day 2 (Next)
-
-Deterministic path planner (A* on 2D grid).
-
-Simple executor (PID or direct waypoint follow).
-
-Golden-path test cases for reproducibility.
-
-Future Days
-
-Day 3: GenAI NL→MissionPlan parser (structured outputs).
-
-Day 4: Policy micro-RAG + Supervisor.
-
-Day 5: E2E pipeline, polish, demo GIF.
-
-🚀 Quickstart
-
+```bash
 python -m venv .venv
 .\.venv\Scripts\activate
 pip install -e ."[dev]"
@@ -46,9 +39,13 @@ pip install -e ."[dev]"
 pip install types-jsonschema
 pytest
 python examples\maps\generate_maps.py
+```
 
-📂 Repository Structure
+---
 
+## 📂 Repository Structure
+
+```
 docs/                 # Requirements, architecture, safety case, ADRs, policy corpus
 interfaces/schemas/   # MissionPlan JSON Schema
 src/ugv_mission_planner/  # Pydantic models
@@ -56,32 +53,27 @@ examples/maps/        # Demo maps generator (.npy)
 examples/missions/    # Example mission JSONs
 tests/                # Unit tests (schema, models)
 .github/workflows/    # CI configuration
+```
 
-📜 Documentation
+---
 
-Requirements
+## 📜 Documentation
 
-Architecture
+* [Requirements](docs/REQUIREMENTS.md)
+* [Architecture](docs/ARCHITECTURE.md)
+* [Safety Case Lite](docs/SAFETY_CASE_LITE.md)
+* [UGV Policy Corpus](docs/UGV_POLICY.md)
+* ADRs in `docs/ADRs/` (0001–0003)
 
-Safety Case Lite
+---
 
-UGV Policy Corpus
+## 💡 Why This Matters
 
-ADRs in docs/ADRs/ (0001–0003)
+This project demonstrates how to:
 
-📈 Why This Matters
+* Define and enforce **clear data contracts**.
+* Integrate **GenAI** into a safety‑critical pipeline without losing determinism.
+* Build for **testability and traceability** from day one.
+* Maintain quality through **automation and CI**.
 
-This project demonstrates System Architect thinking:
-
-Contracts-first design (MissionPlan schema).
-
-Separation of deterministic core from GenAI interface.
-
-Traceability from requirements to implementation.
-
-CI-driven development with reproducible runs.
-
-📅 Status: Day 1 Complete
-
-We’ve laid the groundwork. On Day 2, we’ll bring the system to life with a reproducible planner and executor, paving the way for GenAI integration.
-
+The resulting repository is both a working prototype and an architectural showcase.
