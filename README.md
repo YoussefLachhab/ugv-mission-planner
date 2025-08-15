@@ -1,50 +1,54 @@
-# UGV Mission Planner (GenAI‑Guarded)
+UGV Mission Planner (GenAI‑Guarded)
 
-&#x20;
+
+
 
 Turn natural‑language missions into validated, policy‑compliant plans and execute them in a deterministic 2D sim. GenAI is boxed behind strict schemas and policy checks; planning and execution are deterministic.
 
----
+📅 Project Timeline
 
-## 📅 Project Timeline
+Day 1 (✅ Complete)
 
-**Day 1 (✅ Complete)**
+Public GitHub repo with proper structure.
 
-* Public GitHub repo with proper structure.
-* `.gitignore` and `.gitattributes` configured.
-* Core docs, schemas, models, example missions/maps.
-* Unit tests for schema and models.
-* CI workflow prepared (lint, type-check, tests).
+.gitignore and .gitattributes configured.
 
-**Day 2 (Next)**
+Core docs, schemas, models, example missions/maps.
 
-* Deterministic path planner (A\* on 2D grid).
-* Simple executor (PID or direct waypoint follow).
-* Golden-path test cases for reproducibility.
+Unit tests for schema and models.
 
-**Future Days**
+CI workflow prepared (lint, type-check, tests).
 
-* Day 3: GenAI NL→MissionPlan parser (structured outputs).
-* Day 4: Policy micro-RAG + Supervisor.
-* Day 5: E2E pipeline, polish, demo GIF.
+Fixed CI by adding types-jsonschema stubs for mypy.
 
----
+Day 2 (Next)
 
-## 🚀 Quickstart
+Deterministic path planner (A* on 2D grid).
 
-```bash
+Simple executor (PID or direct waypoint follow).
+
+Golden-path test cases for reproducibility.
+
+Future Days
+
+Day 3: GenAI NL→MissionPlan parser (structured outputs).
+
+Day 4: Policy micro-RAG + Supervisor.
+
+Day 5: E2E pipeline, polish, demo GIF.
+
+🚀 Quickstart
+
 python -m venv .venv
 .\.venv\Scripts\activate
-pip install -e .[dev]
+pip install -e ."[dev]"
+# Install missing type stubs for CI consistency
+pip install types-jsonschema
 pytest
 python examples\maps\generate_maps.py
-```
 
----
+📂 Repository Structure
 
-## 📂 Repository Structure
-
-```
 docs/                 # Requirements, architecture, safety case, ADRs, policy corpus
 interfaces/schemas/   # MissionPlan JSON Schema
 src/ugv_mission_planner/  # Pydantic models
@@ -52,31 +56,32 @@ examples/maps/        # Demo maps generator (.npy)
 examples/missions/    # Example mission JSONs
 tests/                # Unit tests (schema, models)
 .github/workflows/    # CI configuration
-```
 
----
+📜 Documentation
 
-## 📜 Documentation
+Requirements
 
-* [Requirements](docs/REQUIREMENTS.md)
-* [Architecture](docs/ARCHITECTURE.md)
-* [Safety Case Lite](docs/SAFETY_CASE_LITE.md)
-* [UGV Policy Corpus](docs/UGV_POLICY.md)
-* ADRs in `docs/ADRs/` (0001–0003)
+Architecture
 
----
+Safety Case Lite
 
-## 📈 Why This Matters
+UGV Policy Corpus
 
-This project demonstrates **System Architect** thinking:
+ADRs in docs/ADRs/ (0001–0003)
 
-* Contracts-first design (MissionPlan schema).
-* Separation of deterministic core from GenAI interface.
-* Traceability from requirements to implementation.
-* CI-driven development with reproducible runs.
+📈 Why This Matters
 
----
+This project demonstrates System Architect thinking:
 
-## 📅 Status: Day 1 Complete
+Contracts-first design (MissionPlan schema).
 
-We’ve laid the groundwork. On **Day 2**, we’ll bring the system to life with a reproducible planner and executor, paving the way for GenAI integration.
+Separation of deterministic core from GenAI interface.
+
+Traceability from requirements to implementation.
+
+CI-driven development with reproducible runs.
+
+📅 Status: Day 1 Complete
+
+We’ve laid the groundwork. On Day 2, we’ll bring the system to life with a reproducible planner and executor, paving the way for GenAI integration.
+
