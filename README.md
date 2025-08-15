@@ -77,3 +77,8 @@ This project demonstrates how to:
 * Maintain quality through **automation and CI**.
 
 The resulting repository is both a working prototype and an architectural showcase.
+
+![Demo GIF](docs/demo.gif)
+<br/>
+<img src="docs/demo.png" width="360" />
+
