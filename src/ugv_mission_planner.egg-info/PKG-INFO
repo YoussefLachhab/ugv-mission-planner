@@ -9,6 +9,7 @@ Description-Content-Type: text/markdown
 Requires-Dist: pydantic>=2.5
 Requires-Dist: numpy>=1.26
 Requires-Dist: jsonschema>=4.20
+Requires-Dist: matplotlib>=3.8
 Provides-Extra: genai
 Requires-Dist: openai>=1.40; extra == "genai"
 Requires-Dist: langchain>=0.2.0; extra == "genai"
@@ -19,6 +20,87 @@ Requires-Dist: ruff>=0.4; extra == "dev"
 Requires-Dist: mypy>=1.8; extra == "dev"
 Requires-Dist: types-jsonschema>=4.23.0; extra == "dev"
 
-﻿# UGV Mission Planner (GenAI‑Guarded)
+# UGV Mission Planner (GenAI‑Guarded)
 
-See docs/ for details. Day 1 complete.
+![CI](https://github.com/<YOUR_USERNAME>/ugv-mission-planner/actions/workflows/ci.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+---
+
+## 🎯 Objective
+
+The **UGV Mission Planner (GenAI‑Guarded)** is designed to showcase how natural‑language instructions can be transformed into safe, deterministic, and policy‑compliant mission plans for an Unmanned Ground Vehicle (UGV). This project demonstrates **System Architect** skills by combining:
+
+* Contracts‑first design with strict schema validation.
+* A clear separation of GenAI interfaces from deterministic planning and execution.
+* Built‑in safety checks and traceability.
+* Reproducibility, testability, and CI‑driven quality.
+
+This repository serves as a public, interview‑ready demonstration of architecting a small but realistic autonomous system with modern AI tooling.
+
+---
+
+## 📦 Deliverables
+
+* **Validated data contracts**: JSON Schema + Pydantic models for `MissionPlan`.
+* **Safety corpus**: demo UGV policy rules for validation and grounding.
+* **Example missions and maps**: reproducible test scenarios.
+* **Automated tests**: schema validation and model correctness.
+* **Continuous Integration**: lint, type checks, and tests run on every commit.
+* **Documentation**: requirements, architecture diagrams, safety case, and architecture decision records (ADRs).
+
+---
+
+## 🚀 Quickstart
+
+```bash
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -e ."[dev]"
+# Install missing type stubs for CI consistency
+pip install types-jsonschema
+pytest
+python examples\maps\generate_maps.py
+```
+
+---
+
+## 📂 Repository Structure
+
+```
+docs/                 # Requirements, architecture, safety case, ADRs, policy corpus
+interfaces/schemas/   # MissionPlan JSON Schema
+src/ugv_mission_planner/  # Pydantic models
+examples/maps/        # Demo maps generator (.npy)
+examples/missions/    # Example mission JSONs
+tests/                # Unit tests (schema, models)
+.github/workflows/    # CI configuration
+```
+
+---
+
+## 📜 Documentation
+
+* [Requirements](docs/REQUIREMENTS.md)
+* [Architecture](docs/ARCHITECTURE.md)
+* [Safety Case Lite](docs/SAFETY_CASE_LITE.md)
+* [UGV Policy Corpus](docs/UGV_POLICY.md)
+* ADRs in `docs/ADRs/` (0001–0003)
+
+---
+
+## 💡 Why This Matters
+
+This project demonstrates how to:
+
+* Define and enforce **clear data contracts**.
+* Integrate **GenAI** into a safety‑critical pipeline without losing determinism.
+* Build for **testability and traceability** from day one.
+* Maintain quality through **automation and CI**.
+
+The resulting repository is both a working prototype and an architectural showcase.
+
+![Demo GIF](docs/demo.gif)
+<br/>
+<img src="docs/demo.png" width="360" />
+

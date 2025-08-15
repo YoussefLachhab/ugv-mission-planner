@@ -15,7 +15,8 @@ keywords = ["UGV", "mission planning", "GenAI", "A*", "safety", "RAG"]
 dependencies = [
   "pydantic>=2.5",
   "numpy>=1.26",
-  "jsonschema>=4.20"
+  "jsonschema>=4.20",
+  "matplotlib>=3.8"
 ]
 
 [project.optional-dependencies]
@@ -31,3 +32,24 @@ dev = [
   "mypy>=1.8",
   "types-jsonschema>=4.23.0"
 ]
+
+[tool.mypy]
+python_version = "3.11"
+exclude = ["^tests/"]
+warn_return_any = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+strict_equality = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["tests", "tests.*"]
+disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = ["matplotlib", "matplotlib.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["ugv_mission_planner", "ugv_mission_planner.*"]
+implicit_reexport = true

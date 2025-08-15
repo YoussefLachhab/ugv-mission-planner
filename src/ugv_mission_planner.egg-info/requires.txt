@@ -1,6 +1,7 @@
 pydantic>=2.5
 numpy>=1.26
 jsonschema>=4.20
+matplotlib>=3.8
 
 [dev]
 pytest>=8
