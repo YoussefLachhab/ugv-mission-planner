@@ -1,84 +1,64 @@
-# UGV Mission Planner (GenAI‑Guarded)
+# UGV Mission Planner (GenAI-Guarded)
 
-![CI](https://github.com/<YOUR_USERNAME>/ugv-mission-planner/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/YoussefLachhab/ugv-mission-planner.git/actions/workflows/ci.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+> **TL;DR** — Natural-language missions → **schema-validated MissionPlan** → **deterministic** A* planning/execution → **policy guardrails** (geofences, speed caps) with **observable artifacts** (PASS/FAIL metrics + GIF).  
+> GenAI is **boxed** to the interface: it interprets text into a strict schema; planning/execution are deterministic and testable.
 
 ---
 
 ## 🎯 Objective
 
-The **UGV Mission Planner (GenAI‑Guarded)** is designed to showcase how natural‑language instructions can be transformed into safe, deterministic, and policy‑compliant mission plans for an Unmanned Ground Vehicle (UGV). This project demonstrates **System Architect** skills by combining:
+Showcase an interview-ready, safety-aware system architecture:
 
-* Contracts‑first design with strict schema validation.
-* A clear separation of GenAI interfaces from deterministic planning and execution.
-* Built‑in safety checks and traceability.
-* Reproducibility, testability, and CI‑driven quality.
-
-This repository serves as a public, interview‑ready demonstration of architecting a small but realistic autonomous system with modern AI tooling.
+- **Contracts-first:** strict JSON Schema + Pydantic models.
+- **GenAI at the edges:** LLM parses NL → structured plan; the core is deterministic.
+- **Policy by design:** geofences painted onto the grid; **automatic A\*** fallback if a plan would violate policy.
+- **Traceability:** every run has a **trace id** and produces artifacts (logs, PASS/FAIL, GIF) you can share.
 
 ---
 
-## 📦 Deliverables
+## 🧩 What GenAI does vs. what’s deterministic
 
-* **Validated data contracts**: JSON Schema + Pydantic models for `MissionPlan`.
-* **Safety corpus**: demo UGV policy rules for validation and grounding.
-* **Example missions and maps**: reproducible test scenarios.
-* **Automated tests**: schema validation and model correctness.
-* **Continuous Integration**: lint, type checks, and tests run on every commit.
-* **Documentation**: requirements, architecture diagrams, safety case, and architecture decision records (ADRs).
+| Layer | Responsibility | Tech |
+|---|---|---|
+| **GenAI interface** | Parse free-text mission into a schema (`goals`, `constraints`) | OpenAI `gpt-4o-mini` (configurable), LangChain-OpenAI |
+| **Deterministic core** | Path planning, waypoint speeds, execution stubs | Python, A\*, NumPy |
+| **Guardrails** | Enforce geofences/speed; replan with A\* if needed | Grid painting + A\* fallback |
+| **Observability** | Trace IDs, PASS/FAIL report, GIF artifacts | Structured logs, verifier, Matplotlib |
 
 ---
 
-## 🚀 Quickstart
+## 🚀 90-Second Demo (with OpenAI LLM)
 
-```bash
+> Requires an OpenAI key to show the LLM’s value (robust NL parsing). A FakeLLM is available for tests.
+
+```powershell
+# Windows PowerShell
 python -m venv .venv
 .\.venv\Scripts\activate
 pip install -e ."[dev]"
-# Install missing type stubs for CI consistency
-pip install types-jsonschema
-pytest
-python examples\maps\generate_maps.py
-```
 
----
+# Use the real LLM
+$env:OPENAI_API_KEY = "sk-..."          # <-- your key
+Remove-Item Env:UGV_FAKE_LLM -ErrorAction SilentlyContinue
+$env:UGV_OPENAI_MODEL = "gpt-4o-mini"   # optional (default is the same)
 
-## 📂 Repository Structure
+# Safety/visualization configs (optional but recommended)
+$env:UGV_OCC_MODE = "one_is_blocked"    # grid: 0=free, >0=blocked
+$env:UGV_AVOID_INFLATE_CELLS = "2"      # 2-cell safety margin around avoid zones
+$env:UGV_EXEC_DT = "0.05"               # smoother animation
+$env:UGV_VERBOSE = "1"                  # more logs
 
-```
-docs/                 # Requirements, architecture, safety case, ADRs, policy corpus
-interfaces/schemas/   # MissionPlan JSON Schema
-src/ugv_mission_planner/  # Pydantic models
-examples/maps/        # Demo maps generator (.npy)
-examples/missions/    # Example mission JSONs
-tests/                # Unit tests (schema, models)
-.github/workflows/    # CI configuration
-```
+# One-shot: NL → Plan → Verify → GIF
+python scripts/run_from_nl.py `
+  --map examples/maps/open_area.npy `
+  --mission "Patrol between (2,2) and (18,2) twice, avoid [8,0,12,6], max speed 1.2 m/s" `
+  --save-gif
 
----
-
-## 📜 Documentation
-
-* [Requirements](docs/REQUIREMENTS.md)
-* [Architecture](docs/ARCHITECTURE.md)
-* [Safety Case Lite](docs/SAFETY_CASE_LITE.md)
-* [UGV Policy Corpus](docs/UGV_POLICY.md)
-* ADRs in `docs/ADRs/` (0001–0003)
-
----
-
-## 💡 Why This Matters
-
-This project demonstrates how to:
-
-* Define and enforce **clear data contracts**.
-* Integrate **GenAI** into a safety‑critical pipeline without losing determinism.
-* Build for **testability and traceability** from day one.
-* Maintain quality through **automation and CI**.
-
-The resulting repository is both a working prototype and an architectural showcase.
-
-![Demo GIF](docs/demo.gif)
-<br/>
-<img src="docs/demo.png" width="360" />
+New-Item -ItemType Directory -Force -Path docs | Out-Null
+Copy-Item runs\sim_*.gif docs\demo.gif
+Add-Content README.md "`n![Demo](docs/demo.gif)`n"
+![Demo](docs/demo.gif)
 

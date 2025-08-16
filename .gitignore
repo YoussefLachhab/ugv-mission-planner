@@ -20,3 +20,8 @@ Thumbs.db
 # Local artifacts
 examples/maps/*.npy
 '@ | Out-File -Encoding ASCII .gitignore
+
+runs/
+docs/.cache/
+*.gif
+*.mp4

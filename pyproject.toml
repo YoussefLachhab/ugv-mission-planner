@@ -13,10 +13,13 @@ keywords = ["UGV", "mission planning", "GenAI", "A*", "safety", "RAG"]
 
 # Minimal deps to start
 dependencies = [
-  "pydantic>=2.5",
-  "numpy>=1.26",
-  "jsonschema>=4.20",
-  "matplotlib>=3.8"
+  "pydantic>=2",
+  "numpy",
+  "networkx",
+  "matplotlib",   # NEW (for sim GIF)
+  "pillow",       # NEW (for GIF writer)
+  "jsonschema",
+  "langchain-openai",  # already installed for LLM
 ]
 
 [project.optional-dependencies]
