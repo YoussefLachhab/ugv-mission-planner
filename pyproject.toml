@@ -56,3 +56,25 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = ["ugv_mission_planner", "ugv_mission_planner.*"]
 implicit_reexport = true
+
+name: CI
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      UGV_FAKE_LLM: "1"   # keep tests offline/deterministic
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e ."[dev]"
+      - run: pytest -q

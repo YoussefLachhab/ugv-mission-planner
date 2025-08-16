@@ -1,48 +1,77 @@
 from __future__ import annotations
-from typing import Protocol, Any, Dict
+
+import json
 import os
-from pydantic import BaseModel
+from dataclasses import dataclass
+from typing import Any, Dict, List, Sequence, Tuple, TypedDict
+
+# Import at top (ruff E402)
+try:  # pragma: no cover - import presence varies by environment
+    from langchain_openai import ChatOpenAI
+    HAS_OPENAI = True
+except Exception:  # pragma: no cover
+    ChatOpenAI = None  # type: ignore[assignment]
+    HAS_OPENAI = False
+
 from ugv_mission_planner.models import Constraints
 
-class LLM(Protocol):
-    def structured_mission(self, prompt: str) -> Dict[str, Any]: ...
 
-class FakeLLM:
-    def __init__(self, payload: Dict[str, Any]) -> None:
-        self._payload = payload
-    def structured_mission(self, prompt: str) -> Dict[str, Any]:
-        return self._payload
+class LLM:
+    def structured_mission(self, text: str) -> Dict[str, Any]:
+        raise NotImplementedError
 
-# ---- Structured models for the LLM boundary ----
-class Goal(BaseModel):
-    x: float
-    y: float
 
-class MissionModel(BaseModel):
-    # Use objects for goals to satisfy OpenAI structured outputs
-    goals: list[Goal]
-    constraints: Constraints
+# ---- Fake client for tests/offline ----
+@dataclass
+class FakeLLM(LLM):
+    payload: Dict[str, Any]
 
-_SYSTEM = (
-    "You are a mission planner assistant.\n"
-    "Extract JSON for MissionModel(goals: list[Goal{x:float,y:float}], constraints: Constraints).\n"
-    "Rules: return JSON only; no extra keys; units in meters/seconds; "
-    "max_speed_mps <= 2.0; avoid_zones are [xmin,ymin,xmax,ymax]."
-)
+    def structured_mission(self, text: str) -> Dict[str, Any]:
+        return json.loads(json.dumps(self.payload))  # deep copy
+
 
 # ---- Real client ----
-from langchain_openai import ChatOpenAI
+class OpenAILLM(LLM):  # pragma: no cover
+    def __init__(self, model: str | None = None) -> None:
+        if not HAS_OPENAI:
+            raise RuntimeError("langchain-openai not installed")
+        self.model = model or os.getenv("UGV_OPENAI_MODEL", "gpt-4o-mini")
+        self.client = ChatOpenAI(model=self.model, temperature=0)
 
-class OpenAILLM:
-    def __init__(self, model: str | None = None, temperature: float = 0.0) -> None:
-        model = model or os.getenv("UGV_OPENAI_MODEL", "gpt-4o-mini")
-        self._llm = ChatOpenAI(model=model, temperature=temperature)
-        # Be explicit: use function-calling to avoid strict JSON schema issues
-        self._structured = self._llm.with_structured_output(
-            MissionModel,
-            method="function_calling"
+    def structured_mission(self, text: str) -> Dict[str, Any]:
+        # Return a dict compatible with MissionPlan fields
+        # We use a light guidance prompt; structured output handled by downstream validation.
+        prompt = (
+            "Extract goals and constraints from the mission. "
+            "Return JSON with keys: goals[[x,y]...], constraints{max_speed_mps, avoid_zones[[xmin,ymin,xmax,ymax]], battery_min_pct}.\n"
+            f"Mission: {text}"
         )
+        resp = self.client.invoke(prompt)  # type: ignore[union-attr]
+        content = resp.content if hasattr(resp, "content") else str(resp)
+        try:
+            data = json.loads(content)
+        except Exception:
+            # Allow model to return text; try to find a JSON object
+            start = content.find("{")
+            end = content.rfind("}")
+            if start != -1 and end != -1 and end > start:
+                data = json.loads(content[start : end + 1])
+            else:
+                raise
+        return data
 
-    def structured_mission(self, prompt: str) -> Dict[str, Any]:
-        result: MissionModel = self._structured.invoke(f"{_SYSTEM}\n\nUser: {prompt}")
-        return result.model_dump()
+
+def get_llm() -> LLM:
+    """Return either FakeLLM (when UGV_FAKE_LLM=1) or the real OpenAI-backed client."""
+    if os.getenv("UGV_FAKE_LLM") == "1":
+        payload = os.getenv("UGV_FAKE_PAYLOAD")
+        if payload:
+            return FakeLLM(json.loads(payload))
+        # Minimal default to keep CLI happy when someone sets UGV_FAKE_LLM but no payload
+        return FakeLLM(
+            {
+                "goals": [[2, 2], [18, 2], [2, 2], [18, 2]],
+                "constraints": {"max_speed_mps": 1.2, "avoid_zones": [[8, 0, 12, 6]], "battery_min_pct": 15},
+            }
+        )
+    return OpenAILLM()
