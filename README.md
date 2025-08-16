@@ -1,6 +1,6 @@
 # UGV Mission Planner (GenAI-Guarded)
 
-![CI](https://github.com/<YoussefLachhab>/ugv-mission-planner/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/YoussefLachhab/ugv-mission-planner/actions/workflows/ci.yml/badge.svg?branch=main)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ![Demo](docs/demo.gif)
