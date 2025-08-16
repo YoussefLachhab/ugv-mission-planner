@@ -5,6 +5,7 @@
 
 ![Demo](docs/demo.gif)
 
+
 > **TL;DR** — Natural-language missions → **schema-validated MissionPlan** → **deterministic** A* planning/execution → **policy guardrails** (geofences, speed caps) with **observable artifacts** (PASS/FAIL metrics + GIF).  
 > GenAI is **boxed** to the interface: it interprets text into a strict schema; planning/execution are deterministic and testable.
 
