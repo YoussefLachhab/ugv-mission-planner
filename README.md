@@ -1,7 +1,9 @@
 # UGV Mission Planner (GenAI-Guarded)
 
-![CI](https://github.com/YoussefLachhab/ugv-mission-planner.git/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/<YoussefLachhab>/ugv-mission-planner/actions/workflows/ci.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+![Demo](docs/demo.gif)
 
 > **TL;DR** — Natural-language missions → **schema-validated MissionPlan** → **deterministic** A* planning/execution → **policy guardrails** (geofences, speed caps) with **observable artifacts** (PASS/FAIL metrics + GIF).  
 > GenAI is **boxed** to the interface: it interprets text into a strict schema; planning/execution are deterministic and testable.
@@ -56,9 +58,3 @@ python scripts/run_from_nl.py `
   --map examples/maps/open_area.npy `
   --mission "Patrol between (2,2) and (18,2) twice, avoid [8,0,12,6], max speed 1.2 m/s" `
   --save-gif
-
-New-Item -ItemType Directory -Force -Path docs | Out-Null
-Copy-Item runs\sim_*.gif docs\demo.gif
-Add-Content README.md "`n![Demo](docs/demo.gif)`n"
-![Demo](docs/demo.gif)
-
