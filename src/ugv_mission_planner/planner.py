@@ -1,15 +1,17 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from typing import Iterable, List, Tuple, Optional
+
 import heapq
+from collections.abc import Iterable
+from dataclasses import dataclass
+
 import numpy as np
 
 Grid = np.ndarray  # dtype uint8, 0=free, 1=obstacle
-Coord = Tuple[int, int]
+Coord = tuple[int, int]
 
 @dataclass(frozen=True)
 class PlanResult:
-    path: List[Coord]  # grid cells from start..goal inclusive
+    path: list[Coord]  # grid cells from start..goal inclusive
 
 def _heuristic(a: Coord, b: Coord) -> float:
     # Manhattan is deterministic on grids
@@ -24,12 +26,12 @@ def _neighbors(p: Coord, grid: Grid) -> Iterable[Coord]:
         if 0 <= nx < h and 0 <= ny < w and grid[nx, ny] == 0:
             yield (nx, ny)
 
-def astar(grid: Grid, start: Coord, goal: Coord) -> Optional[List[Coord]]:
+def astar(grid: Grid, start: Coord, goal: Coord) -> list[Coord] | None:
     """Deterministic A* on occupancy grid. Returns path of cells or None."""
     if grid[start] == 1 or grid[goal] == 1:
         return None
 
-    open_heap: List[Tuple[float, int, Coord]] = []
+    open_heap: list[tuple[float, int, Coord]] = []
     counter = 0  # tie-breaker for stability
     g = {start: 0.0}
     came: dict[Coord, Coord] = {}
@@ -61,7 +63,7 @@ def astar(grid: Grid, start: Coord, goal: Coord) -> Optional[List[Coord]]:
                 heapq.heappush(open_heap, (f, counter, nb))
     return None
 
-def rasterize_avoid_zones(grid: Grid, avoid_zones: List[Tuple[float, float, float, float]]) -> Grid:
+def rasterize_avoid_zones(grid: Grid, avoid_zones: list[tuple[float, float, float, float]]) -> Grid:
     """Return a copy of grid with avoid_zones marked as obstacles (1)."""
     g = grid.copy()
     h, w = g.shape
@@ -73,9 +75,9 @@ def rasterize_avoid_zones(grid: Grid, avoid_zones: List[Tuple[float, float, floa
     return g
 
 def plan_waypoints(grid: Grid,
-                   start_xy: Tuple[float, float],
-                   goal_xy: Tuple[float, float],
-                   max_speed_mps: float) -> List[Tuple[float, float, float]]:
+                   start_xy: tuple[float, float],
+                   goal_xy: tuple[float, float],
+                   max_speed_mps: float) -> list[tuple[float, float, float]]:
     """
     Plan from start to goal on grid, return waypoints [(x,y,speed_mps), ...].
     Uses cell centers as waypoint coordinates.

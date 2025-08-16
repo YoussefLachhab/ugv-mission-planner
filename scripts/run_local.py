@@ -1,8 +1,10 @@
-from pathlib import Path
 import json
+from pathlib import Path
+
 import numpy as np
-from ugv_mission_planner.planner import plan_waypoints, rasterize_avoid_zones
+
 from ugv_mission_planner.executor import execute_waypoints
+from ugv_mission_planner.planner import plan_waypoints, rasterize_avoid_zones
 
 if __name__ == "__main__":
     grid = np.load(Path("examples/maps/with_block.npy"))

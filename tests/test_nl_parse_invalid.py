@@ -1,6 +1,8 @@
 import pytest
+
 from ugv_mission_planner.genai.llm_client import FakeLLM
-from ugv_mission_planner.nl.nl_mission import parse, ParseError
+from ugv_mission_planner.nl.nl_mission import ParseError, parse
+
 
 def test_parse_invalid_speed_fails_closed():
     fake = FakeLLM({

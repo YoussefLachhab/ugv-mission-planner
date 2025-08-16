@@ -1,9 +1,9 @@
 from .mission_plan import (
-    MissionPlan,
     Constraints,
-    Waypoint,
-    Speed,
+    MissionPlan,
     Point,
+    Speed,
+    Waypoint,
 )
 
 __all__ = [

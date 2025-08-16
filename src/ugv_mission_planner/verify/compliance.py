@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Iterable, List, Sequence, Tuple
 import math
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass
 
 from ugv_mission_planner.models import Waypoint
 
@@ -20,8 +20,8 @@ class Report:
 
 def _interp_points(
     wps: Sequence[Waypoint], dt: float, max_speed: float
-) -> List[Tuple[float, float, float]]:
-    pts: List[Tuple[float, float, float]] = []
+) -> list[tuple[float, float, float]]:
+    pts: list[tuple[float, float, float]] = []
     if not wps:
         return pts
     for a, b in zip(wps[:-1], wps[1:]):
@@ -40,7 +40,7 @@ def _interp_points(
     return pts
 
 
-def _hits(map_grid, pts_xy: Iterable[Tuple[float, float]]) -> int:
+def _hits(map_grid, pts_xy: Iterable[tuple[float, float]]) -> int:
     h, w = map_grid.shape[:2]
     hits = 0
     for x, y in pts_xy:
@@ -51,7 +51,7 @@ def _hits(map_grid, pts_xy: Iterable[Tuple[float, float]]) -> int:
     return hits
 
 
-def _hits_avoid(pts_xy: Iterable[Tuple[float, float]], avoid_zones: List[List[float]]) -> int:
+def _hits_avoid(pts_xy: Iterable[tuple[float, float]], avoid_zones: list[list[float]]) -> int:
     hits = 0
     for x, y in pts_xy:
         for (xmin, ymin, xmax, ymax) in avoid_zones or []:
@@ -61,7 +61,10 @@ def _hits_avoid(pts_xy: Iterable[Tuple[float, float]], avoid_zones: List[List[fl
     return hits
 
 
-def _min_clearance_to_avoid(pts_xy: Iterable[Tuple[float, float]], avoid_zones: List[List[float]]) -> float:
+def _min_clearance_to_avoid(
+    pts_xy: Iterable[tuple[float, float]],
+    avoid_zones: list[list[float]],
+) -> float:
     if not avoid_zones:
         return float("inf")
     best = float("inf")

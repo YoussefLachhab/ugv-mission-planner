@@ -1,8 +1,11 @@
-from pathlib import Path
 import hashlib
 import json
+from pathlib import Path
+
 import numpy as np
+
 from ugv_mission_planner.planner import plan_waypoints, rasterize_avoid_zones
+
 
 def sha_path(wps):
     s = ";".join(f"{x:.0f},{y:.0f}" for (x,y,_) in wps)

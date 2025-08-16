@@ -12,8 +12,8 @@ sys.path.append(str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 import numpy as np
 
 # LLM + NL parsing
-from ugv_mission_planner.genai.llm_client import OpenAILLM, FakeLLM
-from ugv_mission_planner.nl.nl_mission import parse, ParseError
+from ugv_mission_planner.genai.llm_client import FakeLLM, OpenAILLM
+from ugv_mission_planner.nl.nl_mission import ParseError, parse
 
 # Planning pipeline
 from ugv_mission_planner.pipeline.plan_and_execute import run_plan
@@ -85,10 +85,13 @@ def main() -> int:
     grid_for_verify = np.load(args.map)  # original map (no painted zones)
     rep = verify_plan(grid_for_verify, plan, dt=float(os.getenv("UGV_EXEC_DT", "0.1")))
     status = "PASS" if rep.ok else "FAIL"
-    print("\n=== COMPLIANCE {} ===".format(status))
+    print(f"\n=== COMPLIANCE {status} ===")
     print(f"path_length:           {rep.path_length:.2f} m")
     print(f"steps:                 {rep.n_steps}")
-    print(f"max_speed_used:        {rep.max_speed_used:.2f} m/s (cap {float(plan.constraints.max_speed_mps):.2f})")
+
+    cap = float(plan.constraints.max_speed_mps)
+    print(f"max_speed_used:        {rep.max_speed_used:.2f} m/s (cap {cap:.2f})")
+    
     print(f"obstacle hits:         {rep.n_hits_obstacles}")
     print(f"avoid-zone hits:       {rep.n_hits_avoid}")
     print(f"min clearance to avoid {rep.min_clearance_to_avoid:.2f} m")

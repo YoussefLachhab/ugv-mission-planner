@@ -1,7 +1,8 @@
 import json
 import os
-import sys
 import subprocess
+import sys
+
 import numpy as np
 
 

@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
+
 from ugv_mission_planner.models import MissionPlan
+
 
 def test_mission_plan_example_loads() -> None:
     example = Path("examples/missions/patrol_avoid_zone.json")

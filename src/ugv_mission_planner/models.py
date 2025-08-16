@@ -1,8 +1,8 @@
 from __future__ import annotations
-from typing import List, Tuple
+
 from pydantic import BaseModel, Field, model_validator
 
-AvoidZone = Tuple[float, float, float, float]  # x_min, y_min, x_max, y_max
+AvoidZone = tuple[float, float, float, float]  # x_min, y_min, x_max, y_max
 
 class Waypoint(BaseModel):
     x: float
@@ -11,16 +11,16 @@ class Waypoint(BaseModel):
 
 class Constraints(BaseModel):
     max_speed_mps: float = Field(default=1.5, ge=0.0, le=2.0)
-    avoid_zones: List[AvoidZone] = Field(default_factory=list)
+    avoid_zones: list[AvoidZone] = Field(default_factory=list)
     battery_min_pct: int = Field(default=20, ge=0, le=100)
 
 class MissionPlan(BaseModel):
     mission_id: str
-    waypoints: List[Waypoint]
+    waypoints: list[Waypoint]
     constraints: Constraints = Field(default_factory=Constraints)
 
     @model_validator(mode="after")
-    def _check_waypoints_and_speeds(self) -> "MissionPlan":
+    def _check_waypoints_and_speeds(self) -> MissionPlan:
         if len(self.waypoints) < 2:
             raise ValueError("MissionPlan requires at least two waypoints")
         max_v = self.constraints.max_speed_mps

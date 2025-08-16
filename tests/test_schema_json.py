@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
+
 from jsonschema import Draft202012Validator
+
 
 def test_json_schema_validates_example() -> None:
     schema_path = Path("interfaces/schemas/mission_plan.schema.json")

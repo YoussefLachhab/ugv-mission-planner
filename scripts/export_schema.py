@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 from ugv_mission_planner.models import MissionPlan
 
 out = Path("schemas/mission_plan.schema.json")

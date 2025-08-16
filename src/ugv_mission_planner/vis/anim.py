@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import List, Tuple
-import math
 import os
 
 import matplotlib.pyplot as plt
@@ -11,7 +8,7 @@ from matplotlib import animation
 from ugv_mission_planner.models import Waypoint
 
 
-def animate_run(map_grid, avoid_zones, waypoints: List[Waypoint], out_path: str) -> None:
+def animate_run(map_grid, avoid_zones, waypoints: list[Waypoint], out_path: str) -> None:
     h, w = map_grid.shape[:2]
     fig, ax = plt.subplots(figsize=(6, 6))
     ax.set_xlim(0, w)
@@ -43,7 +40,15 @@ def animate_run(map_grid, avoid_zones, waypoints: List[Waypoint], out_path: str)
         dot.set_data([waypoints[idx].x], [waypoints[idx].y])
         return (dot,)
 
-    anim = animation.FuncAnimation(fig, update, init_func=init, frames=max(1, len(waypoints)), interval=20, blit=True)
+    anim = animation.FuncAnimation(
+        fig,
+        update,
+        init_func=init,
+        frames=max(1, len(waypoints)),
+        interval=20,
+        blit=True,
+    )
+
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     anim.save(out_path, writer="pillow")
     plt.close(fig)

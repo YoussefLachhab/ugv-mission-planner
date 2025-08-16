@@ -2,8 +2,6 @@
 from __future__ import annotations
 
 import argparse
-import json
-import os
 import sys
 from pathlib import Path
 
@@ -49,7 +47,10 @@ def main() -> int:
     print("\n=== COMPLIANCE " + ("PASS" if report.pass_ok else "FAIL") + " ===")
     print(f"path_length:           {report.path_length_m:.2f} m")
     print(f"steps:                 {report.steps}")
-    print(f"max_speed_used:        {report.max_speed_used_mps:.2f} m/s (cap {plan.constraints.max_speed_mps:.2f})")
+    
+    cap = float(plan.constraints.max_speed_mps)
+    print(f"max_speed_used:        {report.max_speed_used_mps:.2f} m/s (cap {cap:.2f})")
+
     print(f"obstacle hits:         {report.obstacle_hits}")
     print(f"avoid-zone hits:       {report.avoid_hits}")
     print(f"min clearance to avoid {report.min_clearance_m:.2f} m")

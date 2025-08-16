@@ -1,16 +1,18 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, List, Tuple, Sequence
-import inspect
-import os
-import math
 import heapq
+import inspect
+import math
+import os
+from collections.abc import Sequence
+from dataclasses import dataclass
+from typing import Any
 
 import numpy as np
 
-from ugv_mission_planner.models import MissionPlan, Waypoint
 from ugv_mission_planner import planner  # existing module
+from ugv_mission_planner.models import MissionPlan, Waypoint
+
 try:
     from ugv_mission_planner import executor
 except Exception:  # pragma: no cover
@@ -27,7 +29,7 @@ def _vprint(msg: str) -> None:
         print(msg)
 
 
-def _apply_avoid_zones_inplace(grid: np.ndarray, avoid_zones: List[List[float]] | None) -> None:
+def _apply_avoid_zones_inplace(grid: np.ndarray, avoid_zones: list[list[float]] | None) -> None:
     """
     Paint avoid_zones as obstacles in the occupancy grid.
 
@@ -57,8 +59,9 @@ def _apply_avoid_zones_inplace(grid: np.ndarray, avoid_zones: List[List[float]] 
 
     h, w = grid.shape[:2]
     for rect in avoid_zones:
-        if not isinstance(rect, (list, tuple)) or len(rect) != 4:
+        if not isinstance(rect, list | tuple) or len(rect) != 4:
             continue
+
         xmin, ymin, xmax, ymax = rect
         # Compute integer indices and apply inflation (note: slices are half-open)
         x0 = int(np.floor(xmin)) - inflate
@@ -76,18 +79,20 @@ def _apply_avoid_zones_inplace(grid: np.ndarray, avoid_zones: List[List[float]] 
             grid[y0:y1, x0:x1] = blocked_val
 
     if os.getenv("UGV_VERBOSE") == "1":
-        print(f"[pipeline] painted avoid-zones as blocked={blocked_val} (mode={mode}, inflate={inflate} cell)")
+        print(
+            f"[pipeline] painted avoid-zones as blocked={blocked_val} "
+            f"(mode={mode}, inflate={inflate} cell)"
+        )
 
-
-def _to_waypoints(seq: Sequence[Any], max_speed_mps: float) -> List[Waypoint]:
-    wps: List[Waypoint] = []
+def _to_waypoints(seq: Sequence[Any], max_speed_mps: float) -> list[Waypoint]:
+    wps: list[Waypoint] = []
     for item in seq:
         if isinstance(item, Waypoint):
             wps.append(item)
         elif isinstance(item, dict) and "x" in item and "y" in item:
             spd = float(item.get("speed_mps", max_speed_mps))
             wps.append(Waypoint(x=float(item["x"]), y=float(item["y"]), speed_mps=spd))
-        elif isinstance(item, (list, tuple)) and len(item) >= 2:
+        elif isinstance(item, list | tuple) and len(item) >= 2:
             spd = float(item[2]) if len(item) >= 3 else float(max_speed_mps)
             wps.append(Waypoint(x=float(item[0]), y=float(item[1]), speed_mps=spd))
         else:
@@ -97,10 +102,10 @@ def _to_waypoints(seq: Sequence[Any], max_speed_mps: float) -> List[Waypoint]:
 
 def _plan_leg_with_grid_signature(
     grid: np.ndarray,
-    start_xy: Tuple[float, float],
-    goal_xy: Tuple[float, float],
+    start_xy: tuple[float, float],
+    goal_xy: tuple[float, float],
     max_speed_mps: float,
-) -> List[Waypoint]:
+) -> list[Waypoint]:
     fn = getattr(planner, "plan_waypoints", None)
     if fn is None:
         raise AttributeError("planner.plan_waypoints not found")
@@ -121,10 +126,10 @@ def _plan_leg_with_grid_signature(
 
 def _plan_multi_leg(
     grid: np.ndarray,
-    goals: List[Tuple[float, float]],
+    goals: list[tuple[float, float]],
     max_speed_mps: float,
-) -> List[Waypoint]:
-    all_wps: List[Waypoint] = []
+) -> list[Waypoint]:
+    all_wps: list[Waypoint] = []
     for i in range(len(goals) - 1):
         start_xy = goals[i]
         goal_xy = goals[i + 1]
@@ -135,16 +140,16 @@ def _plan_multi_leg(
     return all_wps
 
 
-def _wp_as_xy_speed(wps: List[Waypoint]) -> List[Tuple[float, float, float]]:
+def _wp_as_xy_speed(wps: list[Waypoint]) -> list[tuple[float, float, float]]:
     return [(float(w.x), float(w.y), float(w.speed_mps)) for w in wps]
 
 
-def _wp_as_xy(wps: List[Waypoint]) -> List[Tuple[float, float]]:
+def _wp_as_xy(wps: list[Waypoint]) -> list[tuple[float, float]]:
     return [(float(w.x), float(w.y)) for w in wps]
 
 
 def _call_execute_waypoints(
-    waypoints: List[Waypoint],
+    waypoints: list[Waypoint],
     max_speed_mps: float,
     trace_id: str,
 ) -> Any:
@@ -197,7 +202,7 @@ def _point_in_rect_xy(p: tuple[float, float], rect: list[float]) -> bool:
     return (xmin <= x <= xmax) and (ymin <= y <= ymax)
 
 
-def _hits_avoid(waypoints: List[Waypoint], avoid_zones: List[List[float]] | None) -> int:
+def _hits_avoid(waypoints: list[Waypoint], avoid_zones: list[list[float]] | None) -> int:
     if not waypoints or not avoid_zones:
         return 0
     hits = 0
@@ -233,7 +238,7 @@ def _astar_grid(
     start_xy: tuple[float, float],
     goal_xy: tuple[float, float],
     occ_mode: str,
-) -> List[tuple[int, int]]:
+) -> list[tuple[int, int]]:
     """8-neighbor A* on integer grid coordinates, returns list of (x,y) cells."""
     sx, sy = start_xy
     gx, gy = goal_xy
@@ -279,7 +284,7 @@ def _astar_grid(
     return []
 
 
-def _wp_from_cells(cells: List[tuple[int, int]], speed: float) -> List[Waypoint]:
+def _wp_from_cells(cells: list[tuple[int, int]], speed: float) -> list[Waypoint]:
     return [Waypoint(x=float(x), y=float(y), speed_mps=float(speed)) for (x, y) in cells]
 
 
@@ -300,8 +305,11 @@ def run_plan(map_path: str, plan: MissionPlan, trace_id: str, execute: bool) -> 
         # Enforce avoid-zone compliance; replan with built-in A* if needed
         occ_mode = os.getenv("UGV_OCC_MODE", "one_is_blocked").lower()
         if _hits_avoid(waypoints, plan.constraints.avoid_zones) > 0 or not waypoints:
-            _vprint("[pipeline] external plan violated avoid-zones or was empty; replanning with A*")
-            fixed: List[Waypoint] = []
+            _vprint(
+                "[pipeline] external plan violated avoid-zones or was empty; "
+                "replanning with A*"
+            )
+            fixed: list[Waypoint] = []
             for s, t in zip(plan.goals[:-1], plan.goals[1:]):
                 cells = _astar_grid(grid, s, t, occ_mode)
                 if not cells:

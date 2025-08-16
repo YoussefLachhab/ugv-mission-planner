@@ -1,6 +1,7 @@
 from ugv_mission_planner.genai.llm_client import FakeLLM
 from ugv_mission_planner.nl.nl_mission import parse
 
+
 def test_parse_success_minimal():
     fake = FakeLLM({
         "goals": [(0.0, 0.0), (5.0, 2.0)],

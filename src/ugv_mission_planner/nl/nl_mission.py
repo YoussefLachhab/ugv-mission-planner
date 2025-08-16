@@ -1,21 +1,23 @@
 from __future__ import annotations
-from typing import Tuple, List
+
 from pydantic import ValidationError
+
 from ugv_mission_planner.genai.llm_client import LLM
-from ugv_mission_planner.models import MissionPlan, Constraints
+from ugv_mission_planner.models import Constraints, MissionPlan
+
 
 class ParseError(Exception):
-    def __init__(self, reason: str, hints: Tuple[str, ...] = ()) -> None:
+    def __init__(self, reason: str, hints: tuple[str, ...] = ()) -> None:
         super().__init__(reason)
         self.hints = hints
 
-def _normalize_goals(raw_goals) -> List[tuple[float, float]]:
+def _normalize_goals(raw_goals) -> list[tuple[float, float]]:
     """Accept [(x,y)], [[x,y]], or [{'x':..,'y':..}] and return [(x,y), ...]."""
-    norm: List[tuple[float, float]] = []
+    norm: list[tuple[float, float]] = []
     for g in raw_goals:
         if isinstance(g, dict) and "x" in g and "y" in g:
             norm.append((float(g["x"]), float(g["y"])))
-        elif isinstance(g, (list, tuple)) and len(g) == 2:
+        elif isinstance(g, list | tuple) and len(g) == 2:
             norm.append((float(g[0]), float(g[1])))
         else:
             raise ValueError(f"Unsupported goal format: {g!r}")

@@ -1,13 +1,13 @@
 # scripts/plot_sim.py
 from __future__ import annotations
 
-from pathlib import Path
 import json
-from typing import Any, Tuple, Dict
-
-import numpy as np
+from pathlib import Path
+from typing import Any
 
 import matplotlib
+import numpy as np
+
 matplotlib.use("Agg")  # headless backend for CI and servers
 import matplotlib.pyplot as plt
 from matplotlib import animation
@@ -16,18 +16,19 @@ from matplotlib.figure import Figure
 from matplotlib.image import AxesImage
 from matplotlib.lines import Line2D
 
-from ugv_mission_planner.planner import plan_waypoints, rasterize_avoid_zones
 from ugv_mission_planner.executor import execute_waypoints
+from ugv_mission_planner.planner import plan_waypoints, rasterize_avoid_zones
 
 # Types
-Waypoint = Tuple[float, float, float]
-Telemetry = Dict[str, float]
+Waypoint = tuple[float, float, float]
+Telemetry = dict[str, float]
 
 def load_demo() -> tuple[np.ndarray, dict[str, Any], list[Waypoint], list[Telemetry]]:
     """Load a demo grid, mission JSON, plan waypoints and simulate execution."""
     grid = np.load(Path("examples/maps/with_block.npy"))
-    mission: dict[str, Any] = json.loads(Path("examples/missions/patrol_avoid_zone.json").read_text())
-
+    mission_path = Path("examples/missions/patrol_avoid_zone.json")
+    mission: dict[str, Any] = json.loads(mission_path.read_text())
+    
     # Rasterize avoid zones from mission
     grid = rasterize_avoid_zones(grid, mission["constraints"]["avoid_zones"])
 

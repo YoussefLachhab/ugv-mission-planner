@@ -1,10 +1,11 @@
 from __future__ import annotations
-from typing import Iterable, List, Tuple, Dict
 
-Telemetry = Dict[str, float]
-Waypoint = Tuple[float, float, float]  # x, y, speed_mps
+from collections.abc import Iterable
 
-def execute_waypoints(waypoints: Iterable[Waypoint], dt: float = 0.1) -> List[Telemetry]:
+Telemetry = dict[str, float]
+Waypoint = tuple[float, float, float]  # x, y, speed_mps
+
+def execute_waypoints(waypoints: Iterable[Waypoint], dt: float = 0.1) -> list[Telemetry]:
     """
     Very simple kinematic follower: moves in a straight line to each waypoint
     at commanded speed (no dynamics). Returns telemetry samples.
@@ -13,7 +14,7 @@ def execute_waypoints(waypoints: Iterable[Waypoint], dt: float = 0.1) -> List[Te
     if not wps:
         return []
     x, y, _ = wps[0]
-    telemetry: List[Telemetry] = []
+    telemetry: list[Telemetry] = []
 
     for (tx, ty, spd) in wps[1:]:
         # step until close to target

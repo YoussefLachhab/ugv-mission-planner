@@ -1,17 +1,20 @@
 import argparse
 import json
 import os
-import sys
 import pathlib
+import sys
 
 # ensure 'src' on path
 sys.path.append(str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
 import numpy as np
-from ugv_mission_planner.genai.llm_client import OpenAILLM, FakeLLM
-from ugv_mission_planner.nl.nl_mission import parse, ParseError
+
+from ugv_mission_planner.genai.llm_client import FakeLLM, OpenAILLM
+from ugv_mission_planner.models import Waypoint
+from ugv_mission_planner.nl.nl_mission import ParseError, parse
 from ugv_mission_planner.pipeline.plan_and_execute import _apply_avoid_zones_inplace  # reuse
 from ugv_mission_planner.vis.anim import animate_run
+
 
 def get_llm():
     if os.getenv("UGV_FAKE_LLM") == "1":
@@ -47,10 +50,18 @@ def main():
     # animate and save
     out_path = animate_run(
         grid=grid,
-        waypoints=plan.waypoints if plan.waypoints else [  # if you call this before planning,
-            # we degrade gracefully: animate the goals polyline
-            *[type("W", (), {"x": g[0], "y": g[1], "speed_mps": plan.constraints.max_speed_mps}) for g in plan.goals]
-        ],
+        waypoints=(
+            plan.waypoints
+            if plan.waypoints
+            else [
+                Waypoint(
+                    x=g[0],
+                    y=g[1],
+                    speed_mps=plan.constraints.max_speed_mps,
+                )
+                for g in plan.goals
+            ]
+        ),
         avoid_zones=plan.constraints.avoid_zones,
         out_path=out,
         max_speed_mps=float(plan.constraints.max_speed_mps),
