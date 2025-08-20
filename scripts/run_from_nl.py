@@ -218,7 +218,10 @@ def run(
     _ensure_dir(outdir)
     ts = datetime.now(UTC).isoformat()
 
+    # mission text
     _write_text(outdir / "mission.txt", mission_text.strip())
+
+    # canonical artifacts used by CLI/tests
     _write_json(outdir / "plan.json", {
         "waypoints": waypoints,
         "total": len(waypoints),
@@ -240,9 +243,40 @@ def run(
         if telemetry is not None:
             _write_json(outdir / "telemetry.json", telemetry)
 
+    # --- Streamlit compatibility artifacts -----------------------------------
+    # summary.json with waypoints (x,y) list
+    try:
+        _write_json(outdir / "summary.json", {
+            "waypoints": [{"x": float(x), "y": float(y)} for (x, y) in waypoints]
+        })
+    except Exception:
+        pass
+
+    # telemetry.ndjson (one JSON object per line)
+    if telemetry is not None:
+        try:
+            with (outdir / "telemetry.ndjson").open("w", encoding="utf-8") as f:
+                for rec in telemetry:
+                    f.write(json.dumps(rec) + "\n")
+        except Exception:
+            pass
+
+    # --- GIF (use the worked grid with avoid zones) -------------------------------
     if save_gif:
-        if not _try_render_gif(grid, waypoints, outdir / "mission.gif"):
-            _write_text(outdir / "_gif_failed.txt", "GIF rendering not available.")
+        gif_path = outdir / "mission.gif"
+        try:
+            # call animator directly so errors are visible
+            from ugv_mission_planner.vis.animate import save_path_gif  # type: ignore
+            save_path_gif(work_grid, waypoints, gif_path)  # <-- use work_grid
+            if gif_path.exists():
+                print(f"GIF:       {gif_path}")
+            else:
+                _write_text(outdir / "_gif_failed.txt", "GIF not created (unknown reason).")
+                print("[WARN] GIF not created.")
+        except Exception as e:
+            _write_text(outdir / "_gif_failed.txt", f"GIF error: {e!r}")
+            print(f"[WARN] GIF failed: {e!r}")
+
 
     return RunArtifacts(
         plan_waypoints=waypoints,
@@ -314,7 +348,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     print("=== UGV Mission Planner ===")
     print(f"Map:        {artifacts.map_path}")
-    print(f"Start→Goal: {artifacts.mission.start} -> {artifacts.mission.goal}")
+    print(f"Start->Goal: {artifacts.mission.start} -> {artifacts.mission.goal}")  # ASCII only
     if artifacts.mission.avoid_rect:
         print(f"Avoid:      {artifacts.mission.avoid_rect}")
     print(f"Speed:      {artifacts.mission.max_speed_mps} m/s")
