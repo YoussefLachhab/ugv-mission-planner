@@ -1,0 +1,20 @@
+target-version = "py311"
+line-length = 120
+
+extend-exclude = [
+  "scripts/_archive",
+  "runs",
+]
+
+[lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+fixable = ["ALL"]
+
+[lint.per-file-ignores]
+"src/ugv_mission_planner/nl/nl_mission.py" = ["E501"]
+"scripts/run_from_nl.py" = ["E501"]
+"apps/streamlit_app.py" = ["E501"]
+"tests/test_policy_rag.py" = ["E501"]
+
+[format]
+quote-style = "double"

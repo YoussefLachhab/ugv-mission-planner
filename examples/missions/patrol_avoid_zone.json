@@ -1,0 +1,17 @@
+{
+  "mission_id": "demo_patrol_001",
+  "goals": [
+    [2, 2],
+    [18, 2]
+  ],
+  "waypoints": [
+    { "x": 2, "y": 2, "speed_mps": 1.2 },
+    { "x": 18, "y": 2, "speed_mps": 1.2 },
+    { "x": 2, "y": 2, "speed_mps": 1.2 }
+  ],
+  "constraints": {
+    "max_speed_mps": 1.5,
+    "avoid_zones": [[8, 0, 12, 6]],
+    "battery_min_pct": 20
+  }
+}
