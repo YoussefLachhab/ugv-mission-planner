@@ -36,7 +36,7 @@ The UGV Mission Planner uses a GenAI edge for natural-language parsing + policy 
 6. **Compliance + Post-Run Supervision**: Check hits, min clearance, near-geofence speed; optional amendments.
 7. **Artifacts**: Console summary, mission brief, optional GIF.
 
-> Source for the diagram: [`docs/diagrams/e2e-sequence.png`](docs/diagrams/e2e-sequence.png)
+> Source for the diagram: [`docs/diagrams/sequence diag E2E.png`](docs/diagrams/sequence diag E2E.png)
 
 ---
 
