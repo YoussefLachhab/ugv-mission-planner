@@ -19,6 +19,27 @@ Showcase an interview-ready, safety-aware system architecture:
 
 ---
 
+## Architecture at a Glance
+
+The UGV Mission Planner uses a GenAI edge for natural-language parsing + policy retrieval, and a deterministic core for planning, execution, and verification.
+
+<p align="center">
+  <img src="docs/diagrams/e2e-sequence.png" alt="UGV Mission Planner — End-to-End Sequence" width="980">
+</p>
+
+### Flow (high level)
+1. **NL → Plan**: Parse mission text into a typed `MissionPlan` (LLM optional, regex fallback).
+2. **Policy**: Retrieve caps from `docs/UGV_POLICY.md` (speed, clearance).
+3. **Pre-Plan Supervision**: Enforce caps; optionally auto-amend max speed.
+4. **Plan**: A* over occupancy grid (+ avoid-zone rasterization/inflation) → waypoints.
+5. **Execute**: Simulator steps along waypoints to generate telemetry.
+6. **Compliance + Post-Run Supervision**: Check hits, min clearance, near-geofence speed; optional amendments.
+7. **Artifacts**: Console summary, mission brief, optional GIF.
+
+> Source for the diagram: [`docs/diagrams/e2e-sequence.puml`](docs/diagrams/e2e-sequence.puml)
+
+---
+
 ## 🧩 What GenAI does vs. what’s deterministic
 
 | Layer | Responsibility | Tech |
