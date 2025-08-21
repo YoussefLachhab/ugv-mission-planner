@@ -24,7 +24,7 @@ Showcase an interview-ready, safety-aware system architecture:
 The UGV Mission Planner uses a GenAI edge for natural-language parsing + policy retrieval, and a deterministic core for planning, execution, and verification.
 
 <p align="center">
-  <img src="docs/diagrams/e2e-sequence.png" alt="UGV Mission Planner — End-to-End Sequence" width="980">
+  <img src="docs/diagrams/sequence diag E2E.png" alt="UGV Mission Planner — End-to-End Sequence" width="980">
 </p>
 
 ### Flow (high level)
