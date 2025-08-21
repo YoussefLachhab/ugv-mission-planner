@@ -46,3 +46,4 @@ python examples/maps/generate_maps.py
 
 # 3) Run the UI
 streamlit run app.py
+
